@@ -9,8 +9,6 @@
 "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-let g:buftabs_original_statusline = matchstr(&statusline, "%=.*")
-
 "
 " Don't bother when in diff mode
 "
@@ -29,31 +27,13 @@ function! Buftabs_enable()
 endfunction
 
 "
-" Persistent echo to avoid overwriting of status line when 'hidden' is enabled
-" 
-
-let s:Pecho=''
-function! s:Pecho(msg)
-	if &ut!=1|let s:hold_ut=&ut|let &ut=1|en
-	let s:Pecho=a:msg
-	aug Pecho
-		au CursorHold * if s:Pecho!=''|echo s:Pecho |let s:Pecho=''|let &ut=s:hold_ut|en |aug Pecho|exe 'au!'|aug END|aug! Pecho
-	aug END
-endf
-
-
-"
 " Draw the buftabs
 "
 
 function! Buftabs_show(deleted_buf)
 	let l:i = 1
-	let s:list = ''
-	let l:start = 0
-	let l:end = 0
-	if ! exists("w:from") 
-		let w:from = 0
-	endif
+	let s:list = []
+	let l:current_index = 0
 
 	if ! exists("w:buftabs_enabled")
 		return
@@ -82,12 +62,10 @@ function! Buftabs_show(deleted_buf)
 			" be replaced by markers later. If it is modified, it is appended with
 			" an appropriate symbol (an exclamation mark by default)
 
+      call add(s:list,  l:name)
+
 			if winbufnr(winnr()) == l:i
-				let l:start = strlen(s:list)
-				let s:list = s:list . g:BuftabsConfig()['formatter_pattern']['active_prefix'] . l:name . g:BuftabsConfig()['formatter_pattern']['active_suffix']
-				let l:end = strlen(s:list)
-			else
-				let s:list = s:list . ' ' . l:name . ' '
+				let l:current_index = len(s:list)
 			endif
 		end
 
@@ -97,45 +75,8 @@ function! Buftabs_show(deleted_buf)
 	" If the resulting list is too long to fit on the screen, chop
 	" out the appropriate part
 
-	let l:width = winwidth(0) - 12
+  call g:BuftabsDisplay(s:list, l:current_index)
 
-	if(l:start < w:from) 
-		let w:from = l:start - 1
-	endif
-	if l:end > w:from + l:width
-		let w:from = l:end - l:width 
-	endif
-		
-	let s:list = strpart(s:list, w:from, l:width)
-
-  let s:list = g:BuftabsConfig()['formatter_pattern']['list_prefix'] . s:list . g:BuftabsConfig()['formatter_pattern']['list_suffix']
-
-	" Show the list. The buftabs_in_statusline variable determines of the list
-	" is displayed in the command line (volatile) or in the statusline
-	" (persistent)
-
-  if g:BuftabsConfig()['display']['statusline']
-		" Only overwrite the statusline if buftabs#statusline() has not been
-		" used to specify a location
-		if match(&statusline, "%{buftabs#statusline()}") == -1
-			let &l:statusline = s:list . g:buftabs_original_statusline
-		end
-	else
-		redraw
-		call s:Pecho(s:list)
-	end
-
-endfunction
-
-
-"
-" Optional function returning the current buftabs list string which can
-" be used inside the statusline string using the %{buftabs#statusline()}
-" syntax
-"
-
-function! buftabs#statusline(...)
-	return s:list
 endfunction
 
 
