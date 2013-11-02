@@ -19,7 +19,7 @@ function! s:SetSettingFromVariable(group_name, setting_name, variable_name, defa
   return l:val
 endfunction
 
-function! g:GetBuftabsConfig()
+function! s:GetBuftabsConfig()
   let s:config={}
 
   call s:SetSettingFromVariable('formatter_pattern', 'normal', "g:buftabs_formatter_pattern", "[bufnum]-[bufname]")
@@ -62,3 +62,15 @@ function! g:GetBuftabsConfig()
 
   return s:config
 endfunction
+
+
+function! g:BuftabsConfig()
+  if !exists('g:buftabs_config')
+    let g:buftabs_config = s:GetBuftabsConfig()
+  endif
+  return g:buftabs_config
+endf
+
+function! g:BuftabsResetConfig()
+  unlet! g:buftabs_config
+endf

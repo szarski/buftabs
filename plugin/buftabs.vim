@@ -47,9 +47,6 @@ endf
 "
 
 function! Buftabs_show(deleted_buf)
-
-let s:config = g:GetBuftabsConfig()
-
 	let l:i = 1
 	let s:list = ''
 	let l:start = 0
@@ -73,11 +70,11 @@ let s:config = g:GetBuftabsConfig()
 			" Get the name of the current buffer, and escape characters that might
 			" mess up the statusline
 
-      let l:name = g:FormatFileName(s:config['formatter_pattern']['normal'], l:i)
+      let l:name = g:FormatFileName(g:BuftabsConfig()['formatter_pattern']['normal'], l:i)
 			let l:name = substitute(l:name, "%", "%%", "g")
 
 			if getbufvar(l:i, "&modified") == 1
-				let l:name = l:name . s:config['formatter_pattern']['modified_marker']
+				let l:name = l:name . g:BuftabsConfig()['formatter_pattern']['modified_marker']
 			endif
 			
 			" Append the current buffer number and name to the list. If the buffer
@@ -87,7 +84,7 @@ let s:config = g:GetBuftabsConfig()
 
 			if winbufnr(winnr()) == l:i
 				let l:start = strlen(s:list)
-				let s:list = s:list . s:config['formatter_pattern']['active_prefix'] . l:name . s:config['formatter_pattern']['active_suffix']
+				let s:list = s:list . g:BuftabsConfig()['formatter_pattern']['active_prefix'] . l:name . g:BuftabsConfig()['formatter_pattern']['active_suffix']
 				let l:end = strlen(s:list)
 			else
 				let s:list = s:list . ' ' . l:name . ' '
@@ -111,13 +108,13 @@ let s:config = g:GetBuftabsConfig()
 		
 	let s:list = strpart(s:list, w:from, l:width)
 
-  let s:list = s:config['formatter_pattern']['list_prefix'] . s:list . s:config['formatter_pattern']['list_suffix']
+  let s:list = g:BuftabsConfig()['formatter_pattern']['list_prefix'] . s:list . g:BuftabsConfig()['formatter_pattern']['list_suffix']
 
 	" Show the list. The buftabs_in_statusline variable determines of the list
 	" is displayed in the command line (volatile) or in the statusline
 	" (persistent)
 
-  if s:config['display']['statusline']
+  if g:BuftabsConfig()['display']['statusline']
 		" Only overwrite the statusline if buftabs#statusline() has not been
 		" used to specify a location
 		if match(&statusline, "%{buftabs#statusline()}") == -1
