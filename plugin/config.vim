@@ -22,26 +22,19 @@ endfunction
 function! g:GetBuftabsConfig()
   let s:config={}
 
-  call s:SetSettingFromVariable('formatter_pattern', 'normal',
-        \ "g:buftabs_formatter_pattern", "[bufnum]-[bufname]")
+  call s:SetSettingFromVariable('formatter_pattern', 'normal', "g:buftabs_formatter_pattern", "[bufnum]-[bufname]")
 
-  call s:SetSettingFromVariable('formatter_pattern', 'modified_marker',
-        \ "g:buftabs_marker_modified", "!")
+  call s:SetSettingFromVariable('formatter_pattern', 'modified_marker', "g:buftabs_marker_modified", "!")
 
-  call s:SetSettingFromVariable('highlight_group', 'active',
-        \ "g:buftabs_active_highlight_group", 0)
+  call s:SetSettingFromVariable('highlight_group', 'active', "g:buftabs_active_highlight_group", 0)
 
-  call s:SetSettingFromVariable('highlight_group', 'inactive',
-        \ "g:buftabs_inactive_highlight_group", 0)
+  call s:SetSettingFromVariable('highlight_group', 'inactive', "g:buftabs_inactive_highlight_group", 0)
 
-  call s:SetSettingFromVariable('display', 'statusline',
-        \ "g:buftabs_in_statusline", 0)
+  call s:SetSettingFromVariable('display', 'statusline', "g:buftabs_in_statusline", 0)
 
-  call s:SetSettingFromVariable('formatter_pattern', 'start_marker',
-        \ 'g:buftabs_marker_start', "[")
+  call s:SetSettingFromVariable('formatter_pattern', 'start_marker', 'g:buftabs_marker_start', "[")
 
-  call s:SetSettingFromVariable('formatter_pattern', 'end_marker',
-        \ 'g:buftabs_marker_end', "]")
+  call s:SetSettingFromVariable('formatter_pattern', 'end_marker', 'g:buftabs_marker_end', "]")
 
   let l:marker_end = s:GetSetting('formatter_pattern', 'end_marker')
   let l:marker_start = s:GetSetting('formatter_pattern', 'start_marker')
@@ -62,14 +55,10 @@ function! g:GetBuftabsConfig()
     end
   end
 
-  call s:SetSetting( 'formatter_pattern', 'active_prefix',
-        \ l:marker_start)
-  call s:SetSetting( 'formatter_pattern', 'active_suffix',
-        \ l:marker_end)
-  call s:SetSetting( 'formatter_pattern', 'list_prefix',
-        \ l:list_prefix)
-  call s:SetSetting( 'formatter_pattern', 'list_suffix',
-        \ l:list_suffix)
+  call s:SetSetting( 'formatter_pattern', 'active_prefix', l:marker_start)
+  call s:SetSetting( 'formatter_pattern', 'active_suffix', l:marker_end)
+  call s:SetSetting( 'formatter_pattern', 'list_prefix', l:list_prefix)
+  call s:SetSetting( 'formatter_pattern', 'list_suffix', l:list_suffix)
 
   return s:config
 endfunction
