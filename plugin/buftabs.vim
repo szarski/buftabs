@@ -37,9 +37,7 @@ function! s:Pecho(msg)
 	if &ut!=1|let s:hold_ut=&ut|let &ut=1|en
 	let s:Pecho=a:msg
 	aug Pecho
-		au CursorHold * if s:Pecho!=''|echo s:Pecho
-					\|let s:Pecho=''|let &ut=s:hold_ut|en
-				\|aug Pecho|exe 'au!'|aug END|aug! Pecho
+		au CursorHold * if s:Pecho!=''|echo s:Pecho |let s:Pecho=''|let &ut=s:hold_ut|en |aug Pecho|exe 'au!'|aug END|aug! Pecho
 	aug END
 endf
 

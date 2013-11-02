@@ -45,13 +45,7 @@ function! g:FormatFileName(pattern, bufnum)
   let l:output = a:pattern
   let l:root = s:RootDirectory(l:filename)
 
-  let l:replace_list = [
-  \ ['\[bufnum\]', a:bufnum],
-  \ ['\[bufname\]', l:filename],
-  \ ['\[root_tail\]', s:Tail(l:root)],
-  \ ['\[short_path_letters\]', s:FirstLettersOfDirs(s:DirWithoutRoot(l:filename))],
-  \ ['\[filename\]', s:Tail(l:filename)]
-  \]
+  let l:replace_list = [ ['\[bufnum\]', a:bufnum], ['\[bufname\]', l:filename], ['\[root_tail\]', s:Tail(l:root)], ['\[short_path_letters\]', s:FirstLettersOfDirs(s:DirWithoutRoot(l:filename))], ['\[filename\]', s:Tail(l:filename)] ]
 
   for [pattern, substitution] in l:replace_list
     if match(l:output, pattern) != -1
