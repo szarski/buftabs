@@ -8,6 +8,15 @@ This plugin shows a tab-like list of buffers in the bottom of the window.
 Because the list is displayed in the statusline or the commandline,
 no additional windows or lines are used.
 
+Installation
+------------
+
+I encourage using vundle (https://github.com/gmarik/vundle ):
+
+```vimscript
+Bundle 'szarski/buftabs'
+```
+
 Configuration
 -------------
 
@@ -79,3 +88,12 @@ Configuration
     let g:buftabs_active_highlight_group='BuftabsActive'
     let g:buftabs_inactive_highlight_group='BuftabsNormal'
     ```
+
+Testing
+-------
+
+```bash
+npm install coffee-script
+npm install vimspec
+vimspec
+```
