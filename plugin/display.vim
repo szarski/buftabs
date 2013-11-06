@@ -21,12 +21,24 @@ function! s:Pecho(msg)
   aug END
 endf
 
-function s:DrawInStatusline(joined_content)
-  let l:output = s:StatuslineMarkers()[0] . a:joined_content[0]
-  if a:joined_content[1] != ''
-    let l:output .= s:StatuslineMarkers()[1] . a:joined_content[1] . s:StatuslineMarkers()[2]
+function s:DrawInCommandLine(content)
+  call s:Pecho(join(a:content, ' '))
+endfunction
+
+function s:DrawInStatusline(content, current_index)
+  let l:index = a:current_index - 1
+  if (l:index < len(a:content)) && (l:index > -1)
+    let l:output_before = l:index > 0 ? ' ' . join(a:content[0:(l:index - 1)], '  ') . ' ' : ''
+    let l:output_after = l:index < len(a:content) - 1 ? ' ' . join(a:content[(l:index + 1):], '  ') . ' ' : ''
+    let l:output_active = a:content[l:index]
+    let l:widths = s:CalculateOutputWidthsWithActive(strlen(l:output_before), strlen(l:output_active), strlen(l:output_after))
+
+    let l:output = s:StatuslineMarkers()[0] . l:output_before[(-l:widths[0]):] . s:StatuslineMarkers()[1] . l:output_active[:(l:widths[1])] . s:StatuslineMarkers()[2] . l:output_after[:(l:widths[2])] . s:StatuslineMarkers()[3]
+  else
+    let l:joined_content = join(a:content, '  ')
+    let l:width = s:CalculateOutputWidthWithoutActive(strlen(l:joined_content))
+    let l:output = s:StatuslineMarkers()[0] . ' ' . l:joined_content[:(l:width)] . ' ' . s:StatuslineMarkers()[3]
   endif
-  let l:output .= a:joined_content[2] . s:StatuslineMarkers()[3]
 
   " Only overwrite the statusline if g:BuftabsStatusline() has not been
   " used to specify a location
@@ -59,31 +71,17 @@ function s:StatuslineMarkers()
   return s:status_line_markers
 endfunction
 
-function s:JoinedContent(content, current_index)
-  let l:index = a:current_index - 1
-  if (l:index < len(a:content)) && (l:index > -1)
-    let l:output_before = l:index > 0 ? ' ' . join(a:content[0:(l:index - 1)], '  ') . ' ' : ''
-    let l:output_after = l:index < len(a:content) - 1 ? ' ' . join(a:content[(l:index + 1):], '  ') . ' ' : ''
-    let l:output_active = a:content[l:index]
 
-    let l:width = winwidth(0) - 5 - strlen(l:output_active)
+function s:CalculateOutputWidthWithoutActive(length)
+  return min([winwidth(0) - 5,a:length])
+endfunction
 
-    if strlen(l:output_after) > l:width
-      let l:output_after = strpart(l:output_after, 0, l:width)
-    endif
-
-    let l:width -= strlen(l:output_after)
-
-    if strlen(l:output_before) > l:width
-      let l:output_before = strpart(l:output_before, strlen(l:output_before) - l:width , l:width)
-    endif
-
-    return [l:output_before, l:output_active, l:output_after]
-  else
-    let l:output = join(a:content, '  ')
-
-    return [' ' . l:output,'',' ']
-  endif
+function s:CalculateOutputWidthsWithActive(length1, length2, length3)
+  let l:width = s:CalculateOutputWidthWithoutActive(a:length1 + a:length2 + a:length3)
+  let l:l2 = min([a:length2, l:width])
+  let l:l3 = min([a:length3, l:width - l:l2])
+  let l:l1 = min([a:length1, l:width - l:l2 - l:l3])
+  return [l:l1, l:l2, l:l3]
 endfunction
 
 function! g:BuftabsDisplay(content, current_index)
@@ -91,12 +89,11 @@ function! g:BuftabsDisplay(content, current_index)
   " is displayed in the command line (volatile) or in the statusline
   " (persistent)
 
-  let l:joined_content = s:JoinedContent(a:content, a:current_index)
   if g:BuftabsConfig()['display']['statusline']
-    call s:DrawInStatusline(l:joined_content)
+    call s:DrawInStatusline(a:content, a:current_index)
   else
     redraw
-    call s:Pecho(l:joined_content[0] . l:joined_content[1] . l:joined_content[2])
+    call s:DrawInCommandLine(a:content)
   end
 endfunction
 
