@@ -13,8 +13,6 @@ function g:BuftabsConfig()
 endf
 
 function! TestBuftabsDisplayInStatusline()
-  call FakeConfig('formatter_pattern','end_marker',']')
-  call FakeConfig('formatter_pattern','start_marker','[')
   call FakeConfig('highlight_group','active','AA')
   call FakeConfig('highlight_group','inactive','NN')
   call FakeConfig('display','statusline',1)
@@ -22,23 +20,24 @@ function! TestBuftabsDisplayInStatusline()
 
   call Describe("when first tab is active")
   call g:BuftabsDisplay(['tab1','tab2','tab3'], 1)
-  call AssertEquals(&statusline, '%#NN#%##%#AA#[tab1]%##%#NN# tab2  tab3 %##')
+  call AssertEquals(&statusline, '%#NN#%##%#AA#tab1%##%#NN# tab2  tab3 %##')
 
   call Describe("when second tab is active")
   call g:BuftabsDisplay(['tab1','tab2','tab3'], 2)
-  call AssertEquals(&statusline, '%#NN# tab1 %##%#AA#[tab2]%##%#NN# tab3 %##')
+  call AssertEquals(&statusline, '%#NN# tab1 %##%#AA#tab2%##%#NN# tab3 %##')
 
   call Describe("when last tab is active")
   call g:BuftabsDisplay(['tab1','tab2','tab3'], 3)
-  call AssertEquals(&statusline, '%#NN# tab1  tab2 %##%#AA#[tab3]%##%#NN#%##')
+  call AssertEquals(&statusline, '%#NN# tab1  tab2 %##%#AA#tab3%##%#NN#%##')
 
   call Describe("when no tab is active")
   call g:BuftabsDisplay(['tab1','tab2','tab3'], 4)
   call AssertEquals(&statusline, '%#NN# tab1  tab2  tab3 %##')
 
   " Assumming the window width is 80 here
+  call Describe("when text is too long to fit screen")
   call g:BuftabsDisplay(['verylongtab1','verylongtab2','verylongtab3','verylongtab4','verylongtab5','verylongtab6','verylongtab7'], 4)
-  call AssertEquals(&statusline, '%#NN#tab2  verylongtab3 %##%#AA#[verylongtab4]%##%#NN# verylongtab5  verylongtab6  verylongtab7 %##')
+  call AssertEquals(&statusline, '%#NN#ngtab2  verylongtab3 %##%#AA#verylongtab4%##%#NN# verylongtab5  verylongtab6  verylongtab7 %##')
 
   call Describe("when g:BuftabsConfig()['display']['statusline'] is false")
   let &statusline = ''

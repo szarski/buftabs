@@ -64,7 +64,7 @@ function s:JoinedContent(content, current_index)
   if (l:index < len(a:content)) && (l:index > -1)
     let l:output_before = l:index > 0 ? ' ' . join(a:content[0:(l:index - 1)], '  ') . ' ' : ''
     let l:output_after = l:index < len(a:content) - 1 ? ' ' . join(a:content[(l:index + 1):], '  ') . ' ' : ''
-    let l:output_active = g:BuftabsConfig()['formatter_pattern']['start_marker'] . (a:content[l:index]) . g:BuftabsConfig()['formatter_pattern']['end_marker']
+    let l:output_active = a:content[l:index]
 
     let l:width = winwidth(0) - 5 - strlen(l:output_active)
 

@@ -58,15 +58,14 @@ function! Buftabs_show(deleted_buf)
 			endif
 			
 			" Append the current buffer number and name to the list. If the buffer
-			" is the active buffer, enclose it in some magick characters which will
-			" be replaced by markers later. If it is modified, it is appended with
-			" an appropriate symbol (an exclamation mark by default)
-
-      call add(s:list,  l:name)
+			" is the active buffer, enclose it in markers
 
 			if winbufnr(winnr()) == l:i
-				let l:current_index = len(s:list)
+				let l:current_index = len(s:list) + 1
+        let l:name = g:BuftabsConfig()['formatter_pattern']['start_marker'] . l:name . g:BuftabsConfig()['formatter_pattern']['end_marker']
 			endif
+
+      call add(s:list,  l:name)
 		end
 
 		let l:i = l:i + 1
