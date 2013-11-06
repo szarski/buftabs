@@ -14,7 +14,7 @@
 "
 
 if &diff                                      
-	finish
+  finish
 endif     
 
 
@@ -23,7 +23,7 @@ endif
 "
 
 function! Buftabs_enable()
-	let w:buftabs_enabled = 1
+  let w:buftabs_enabled = 1
 endfunction
 
 "
@@ -31,48 +31,48 @@ endfunction
 "
 
 function! Buftabs_show(deleted_buf)
-	let l:i = 1
-	let s:list = []
-	let l:current_index = 0
+  let l:i = 1
+  let s:list = []
+  let l:current_index = 0
 
-	if ! exists("w:buftabs_enabled")
-		return
-	endif
+  if ! exists("w:buftabs_enabled")
+    return
+  endif
 
-	" Walk the list of buffers
+  " Walk the list of buffers
 
-	while(l:i <= bufnr('$'))
+  while(l:i <= bufnr('$'))
 
-		" Only show buffers in the list, and omit help screens
-	
-		if buflisted(l:i) && getbufvar(l:i, "&modifiable") && a:deleted_buf != l:i
+    " Only show buffers in the list, and omit help screens
+  
+    if buflisted(l:i) && getbufvar(l:i, "&modifiable") && a:deleted_buf != l:i
 
-			" Get the name of the current buffer, and escape characters that might
-			" mess up the statusline
+      " Get the name of the current buffer, and escape characters that might
+      " mess up the statusline
 
       let l:name = g:FormatFileName(g:BuftabsConfig()['formatter_pattern']['normal'], l:i)
-			let l:name = substitute(l:name, "%", "%%", "g")
+      let l:name = substitute(l:name, "%", "%%", "g")
 
-			if getbufvar(l:i, "&modified") == 1
-				let l:name = l:name . g:BuftabsConfig()['formatter_pattern']['modified_marker']
-			endif
-			
-			" Append the current buffer number and name to the list. If the buffer
-			" is the active buffer, enclose it in markers
+      if getbufvar(l:i, "&modified") == 1
+        let l:name = l:name . g:BuftabsConfig()['formatter_pattern']['modified_marker']
+      endif
+      
+      " Append the current buffer number and name to the list. If the buffer
+      " is the active buffer, enclose it in markers
 
-			if winbufnr(winnr()) == l:i
-				let l:current_index = len(s:list) + 1
+      if winbufnr(winnr()) == l:i
+        let l:current_index = len(s:list) + 1
         let l:name = g:BuftabsConfig()['formatter_pattern']['start_marker'] . l:name . g:BuftabsConfig()['formatter_pattern']['end_marker']
-			endif
+      endif
 
       call add(s:list,  l:name)
-		end
+    end
 
-		let l:i = l:i + 1
-	endwhile
+    let l:i = l:i + 1
+  endwhile
 
-	" If the resulting list is too long to fit on the screen, chop
-	" out the appropriate part
+  " If the resulting list is too long to fit on the screen, chop
+  " out the appropriate part
 
   call g:BuftabsDisplay(s:list, l:current_index)
 
@@ -88,7 +88,7 @@ autocmd VimEnter,WinEnter * call Buftabs_enable()
 autocmd VimEnter,BufNew,BufEnter,BufWritePost * call Buftabs_show(-1)
 autocmd BufDelete * call Buftabs_show(expand('<abuf>'))
 if version >= 700
-	autocmd InsertLeave,VimResized * call Buftabs_show(-1)
+  autocmd InsertLeave,VimResized * call Buftabs_show(-1)
 end
 
 " vi: ts=2 sw=2
