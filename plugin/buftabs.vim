@@ -28,7 +28,7 @@ function! s:BufferModified(index)
 endf
 
 function! s:BufferRepresentation(index)
-  let l:name = g:FormatFileName(g:BuftabsConfig('formatter_pattern','normal'), a:index)
+  let l:name = g:FormatFileName(a:index)
   " Remove characters that mess up the statusline
   let l:name = substitute(l:name, "%", "%%", "g")
 

@@ -40,9 +40,9 @@ function! s:FirstLettersOfDirs(filename)
   return substitute(a:filename, '\([^/]\)[^/]*', '\1', 'g')
 endfunction
 
-function! g:FormatFileName(pattern, bufnum)
+function! g:FormatFileName(bufnum)
   let l:filename = bufname(a:bufnum)
-  let l:output = a:pattern
+  let l:output = g:BuftabsConfig('formatter_pattern','normal')
   let l:root = s:RootDirectory(l:filename)
 
   let l:replace_list = [ ['\[bufnum\]', a:bufnum], ['\[bufname\]', l:filename], ['\[root_tail\]', s:Tail(l:root)], ['\[short_path_letters\]', s:FirstLettersOfDirs(s:DirWithoutRoot(l:filename))], ['\[filename\]', s:Tail(l:filename)] ]
