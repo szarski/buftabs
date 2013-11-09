@@ -9,8 +9,6 @@
 "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-let g:buftabs_original_statusline = matchstr(&statusline, "%=.*")
-
 let s:Pecho=''
 function! s:Pecho(msg)
   " Persistent echo to avoid overwriting of status line when 'hidden' is enabled
@@ -25,6 +23,7 @@ function s:DrawInCommandLine(content)
   call s:Pecho(join(a:content, ' '))
 endfunction
 
+let g:buftabs_original_statusline = matchstr(&statusline, "%=.*")
 function s:DrawInStatusline(content, current_index)
   let l:index = a:current_index - 1
   if (l:index < len(a:content)) && (l:index > -1)
@@ -33,17 +32,18 @@ function s:DrawInStatusline(content, current_index)
     let l:output_active = a:content[l:index]
     let l:widths = s:CalculateOutputWidthsWithActive(strlen(l:output_before), strlen(l:output_active), strlen(l:output_after))
 
-    let l:output = s:StatuslineMarkers()[0] . l:output_before[(-l:widths[0]):] . s:StatuslineMarkers()[1] . l:output_active[:(l:widths[1])] . s:StatuslineMarkers()[2] . l:output_after[:(l:widths[2])] . s:StatuslineMarkers()[3]
+    let s:output = s:StatuslineMarkers()[0] . l:output_before[(-l:widths[0]):] . s:StatuslineMarkers()[1] . l:output_active[:(l:widths[1])] . s:StatuslineMarkers()[2] . l:output_after[:(l:widths[2])] . s:StatuslineMarkers()[3]
   else
     let l:joined_content = join(a:content, '  ')
     let l:width = s:CalculateOutputWidthWithoutActive(strlen(l:joined_content))
-    let l:output = s:StatuslineMarkers()[0] . ' ' . l:joined_content[:(l:width)] . ' ' . s:StatuslineMarkers()[3]
+    let s:output = s:StatuslineMarkers()[0] . ' ' . l:joined_content[:(l:width)] . ' ' . s:StatuslineMarkers()[3]
   endif
 
-  " Only overwrite the statusline if g:BuftabsStatusline() has not been
-  " used to specify a location
+  " If the statusline already includes %{g:BuftabsStatusline()},
+  " only update the output, without overriding it.
+  " Otherwise, override the whole statusline
   if match(&statusline, "%{g:BuftabsStatusline()}") == -1
-    let &l:statusline = l:output . g:buftabs_original_statusline
+    let &l:statusline = s:output . g:buftabs_original_statusline
   end
 endfunction
 
@@ -105,5 +105,5 @@ endfunction
 "
 
 function! g:BuftabsStatusline(...)
-	return s:list
+  return s:output
 endfunction
