@@ -31,7 +31,10 @@ function s:DrawInStatusline(content, current_index)
     let l:output_active = a:content[l:index]
     let l:widths = s:CalculateOutputWidthsWithActive(strlen(l:output_before), strlen(l:output_active), strlen(l:output_after))
 
-    let s:output = s:StatuslineMarkers()[0] . l:output_before[(-l:widths[0]):] . s:StatuslineMarkers()[1] . l:output_active[:(l:widths[1])] . s:StatuslineMarkers()[2] . l:output_after[:(l:widths[2])] . s:StatuslineMarkers()[3]
+    let l:markers = s:StatuslineMarkers()
+    let s:output = l:markers[0] . l:output_before[(-l:widths[0]):]
+    let s:output .=  l:markers[1] . l:output_active[:(l:widths[1])] . l:markers[2]
+    let s:output .=  l:output_after[:(l:widths[2])] . l:markers[3]
   else
     let l:joined_content = join(a:content, '  ')
     let l:width = s:CalculateOutputWidthWithoutActive(strlen(l:joined_content))
@@ -47,27 +50,27 @@ function s:DrawInStatusline(content, current_index)
 endfunction
 
 function s:StatuslineMarkers()
-  "if !exists('s:status_line_markers')
-    let l:active_suffix = ''
-    let l:active_prefix = ''
-    let l:list_prefix = ''
-    let l:list_suffix = ''
+  let l:active_suffix = ''
+  let l:active_prefix = ''
+  let l:list_prefix = ''
+  let l:list_suffix = ''
 
-    if g:BuftabsConfig('highlight_group','active') != ''
-      let l:active_prefix = "%#" . g:BuftabsConfig('highlight_group','active') . "#" . l:active_prefix
-      let l:active_suffix = l:active_suffix . "%##"
-    end
+  if g:BuftabsConfig('highlight_group','active') != ''
+    let l:active_prefix = "%#" . g:BuftabsConfig('highlight_group','active')
+    let l:active_prefix .= "#"
+    let l:active_suffix = l:active_suffix . "%##"
+  end
 
-    if g:BuftabsConfig('highlight_group','inactive') != ''
-      let l:list_prefix = '%#' . g:BuftabsConfig('highlight_group','inactive') . '#'
-      let l:list_suffix = '%##'
-      let l:active_prefix = "%##" . l:active_prefix
-      let l:active_suffix = l:active_suffix . '%#' . g:BuftabsConfig('highlight_group','inactive') . '#'
-    end
+  if g:BuftabsConfig('highlight_group','inactive') != ''
+    let l:list_prefix = '%#' . g:BuftabsConfig('highlight_group','inactive')
+    let l:list_prefix .= '#'
+    let l:list_suffix = '%##'
+    let l:active_prefix = "%##" . l:active_prefix
+    let l:active_suffix .= '%#' . g:BuftabsConfig('highlight_group','inactive')
+    let l:active_suffix .= '#'
+  end
 
-    let s:status_line_markers = [l:list_prefix, l:active_prefix, l:active_suffix, l:list_suffix]
-  "endif
-  return s:status_line_markers
+  return [l:list_prefix, l:active_prefix, l:active_suffix, l:list_suffix]
 endfunction
 
 
@@ -84,9 +87,9 @@ function s:CalculateOutputWidthsWithActive(length1, length2, length3)
 endfunction
 
 function! g:BuftabsDisplay(content, current_index)
-  " Show the list. The s:config['display']['statusline'] setting determines of the list
-  " is displayed in the command line (volatile) or in the statusline
-  " (persistent)
+  " Show the list. The s:config['display']['statusline'] setting determines
+  " if the list is displayed in the command line (volatile)
+  " or in the statusline (persistent)
 
   if g:BuftabsConfig('display','statusline')
     call s:DrawInStatusline(a:content, a:current_index)
@@ -96,13 +99,7 @@ function! g:BuftabsDisplay(content, current_index)
   end
 endfunction
 
-
-"
-" Optional function returning the current buftabs list string which can
-" be used inside the statusline string using the %{g:BuftabsStatusline()}
-" syntax
-"
-
 function! g:BuftabsStatusline(...)
+  " This is used when overwriting vim statusline
   return s:output
 endfunction

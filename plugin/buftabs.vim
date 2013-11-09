@@ -15,7 +15,10 @@ endif
 
 function! s:ShowBuffer(index, deleted_buf)
   " Only show buffers in the list, and omit help screens
-  return buflisted(a:index) && getbufvar(a:index, "&modifiable") && a:deleted_buf != a:index
+  let l:listed = buflisted(a:index)
+  let l:modifiable = getbufvar(a:index, "&modifiable")
+  let l:not_deleted = a:deleted_buf != a:index
+  return l:listed && l:modifiable && l:not_deleted
 endf
 
 function! s:BufferActive(index)
@@ -36,7 +39,8 @@ function! s:BufferRepresentation(index)
   endif
   
   if s:BufferActive(a:index)
-    let l:name = g:BuftabsConfig('formatter_pattern','start_marker') . l:name . g:BuftabsConfig('formatter_pattern','end_marker')
+    let l:name = g:BuftabsConfig('formatter_pattern','start_marker') . l:name
+    let l:name .= g:BuftabsConfig('formatter_pattern','end_marker')
   endif
 
   return l:name
