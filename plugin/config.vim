@@ -1,3 +1,13 @@
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" buftabs                                                                  "
+"                                                                          "
+" Copyright 2013 Jacek Szarski <jacek.szarski@gmail.com>                   "
+" Copyright 2006 - 2011 Ico Doornekamp                                     "
+"                                                                          "
+" This file is part of buftabs, released under GNU General Public License, "
+" please see LICENSE.md for details.                                       "
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 function! s:GetSetting(group_name, setting_name)
   return s:config[a:group_name][a:setting_name]
 endf

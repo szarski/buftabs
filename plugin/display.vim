@@ -1,13 +1,12 @@
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" buftabs
-"
-" Copyright 2013 Jacek Szarski <jacek.szarski@gmail.com>
-" Copyright 2006 - 2011 Ico Doornekamp
-"
-" This file is part of buftabs, released under GNU General Public License,
-" please see LICENSE.md for details.
-"
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" buftabs                                                                  "
+"                                                                          "
+" Copyright 2013 Jacek Szarski <jacek.szarski@gmail.com>                   "
+" Copyright 2006 - 2011 Ico Doornekamp                                     "
+"                                                                          "
+" This file is part of buftabs, released under GNU General Public License, "
+" please see LICENSE.md for details.                                       "
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 let s:Pecho=''
 function! s:Pecho(msg)
