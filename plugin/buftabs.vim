@@ -17,27 +17,13 @@ if &diff
   finish
 endif     
 
-
-"
-" Called on VimEnter event
-"
-
-function! Buftabs_enable()
-  let w:buftabs_enabled = 1
-endfunction
-
 "
 " Draw the buftabs
 "
-
 function! Buftabs_show(deleted_buf)
   let l:i = 1
   let s:list = []
   let l:current_index = 0
-
-  if ! exists("w:buftabs_enabled")
-    return
-  endif
 
   " Walk the list of buffers
 
@@ -84,7 +70,6 @@ endfunction
 " buffers
 "
 
-autocmd VimEnter,WinEnter * call Buftabs_enable()
 autocmd VimEnter,BufNew,BufEnter,BufWritePost * call Buftabs_show(-1)
 autocmd BufDelete * call Buftabs_show(expand('<abuf>'))
 if version >= 700
