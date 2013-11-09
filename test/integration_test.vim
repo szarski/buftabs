@@ -6,7 +6,7 @@ exec 'source ' . getcwd() . '/plugin/rooter.vim'
 function! TestBasics()
   let g:buftabs_in_statusline = 1
   call Describe("when set to display in statusline")
-  call Buftabs_show(-1)
+  call g:Buftabs_show(-1)
   call AssertEquals(&statusline, ' 1- [2-TestOutput]')
 endf
 
@@ -38,7 +38,7 @@ function TestComplexSetup()
   exec 'e ' . getcwd() . '/plugin/config.vim'
   exec 'e ' . getcwd() . '/plugin/display.vim'
 
-  call Buftabs_show(-1)
+  call g:Buftabs_show(-1)
 
   call AssertEquals(&statusline, '%#BuftabsNormal#ig.vim %##%#BuftabsActive#[buftabs/p/display.vim]%##%#BuftabsNormal#%##')
 endfunction

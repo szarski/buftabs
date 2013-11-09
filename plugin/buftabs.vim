@@ -9,72 +9,62 @@
 "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-"
-" Don't bother when in diff mode
-"
-
 if &diff                                      
+  " Don't bother when in diff mode
   finish
 endif     
 
-"
-" Draw the buftabs
-"
-function! Buftabs_show(deleted_buf)
-  let l:i = 1
-  let s:list = []
-  let l:current_index = 0
+function! s:ShowBuffer(index, deleted_buf)
+  " Only show buffers in the list, and omit help screens
+  return buflisted(a:index) && getbufvar(a:index, "&modifiable") && a:deleted_buf != a:index
+endf
+
+function! s:BufferActive(index)
+  return winbufnr(winnr()) == a:index
+endf
+
+function! s:BufferModified(index)
+  return getbufvar(a:index, "&modified") == 1
+endf
+
+function! s:BufferRepresentation(index)
+  let l:name = g:FormatFileName(g:BuftabsConfig()['formatter_pattern']['normal'], a:index)
+  " Remove characters that mess up the statusline
+  let l:name = substitute(l:name, "%", "%%", "g")
+
+  if s:BufferModified(a:index)
+    let l:name = l:name . g:BuftabsConfig()['formatter_pattern']['modified_marker']
+  endif
+  
+  if s:BufferActive(a:index)
+    let l:name = g:BuftabsConfig()['formatter_pattern']['start_marker'] . l:name . g:BuftabsConfig()['formatter_pattern']['end_marker']
+  endif
+
+  return l:name
+endf
+
+function! g:Buftabs_show(deleted_buf)
+  let l:list = []
+  let l:current_index = -1
 
   " Walk the list of buffers
-
-  while(l:i <= bufnr('$'))
-
-    " Only show buffers in the list, and omit help screens
-  
-    if buflisted(l:i) && getbufvar(l:i, "&modifiable") && a:deleted_buf != l:i
-
-      " Get the name of the current buffer, and escape characters that might
-      " mess up the statusline
-
-      let l:name = g:FormatFileName(g:BuftabsConfig()['formatter_pattern']['normal'], l:i)
-      let l:name = substitute(l:name, "%", "%%", "g")
-
-      if getbufvar(l:i, "&modified") == 1
-        let l:name = l:name . g:BuftabsConfig()['formatter_pattern']['modified_marker']
+  for l:i in range(1,bufnr('$'))
+    if s:ShowBuffer(l:i, a:deleted_buf)
+      call add(l:list, s:BufferRepresentation(l:i))
+      if s:BufferActive(l:i)
+        let l:current_index = len(l:list)
       endif
-      
-      " Append the current buffer number and name to the list. If the buffer
-      " is the active buffer, enclose it in markers
-
-      if winbufnr(winnr()) == l:i
-        let l:current_index = len(s:list) + 1
-        let l:name = g:BuftabsConfig()['formatter_pattern']['start_marker'] . l:name . g:BuftabsConfig()['formatter_pattern']['end_marker']
-      endif
-
-      call add(s:list,  l:name)
     end
+  endfor
 
-    let l:i = l:i + 1
-  endwhile
-
-  " If the resulting list is too long to fit on the screen, chop
-  " out the appropriate part
-
-  call g:BuftabsDisplay(s:list, l:current_index)
-
+  call g:BuftabsDisplay(l:list, l:current_index)
 endfunction
 
-
-"
 " Hook to events to show buftabs at startup, when creating and when switching
 " buffers
-"
 
-autocmd VimEnter,BufNew,BufEnter,BufWritePost * call Buftabs_show(-1)
-autocmd BufDelete * call Buftabs_show(expand('<abuf>'))
+autocmd VimEnter,BufNew,BufEnter,BufWritePost * call g:Buftabs_show(-1)
+autocmd BufDelete * call g:Buftabs_show(expand('<abuf>'))
 if version >= 700
-  autocmd InsertLeave,VimResized * call Buftabs_show(-1)
+  autocmd InsertLeave,VimResized * call g:Buftabs_show(-1)
 end
-
-" vi: ts=2 sw=2
-
