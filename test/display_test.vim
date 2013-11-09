@@ -8,8 +8,8 @@ function FakeConfig(k1,k2,v)
   let s:fake_config[a:k1][a:k2] = a:v
 endf
 
-function g:BuftabsConfig()
-  return s:fake_config
+function g:BuftabsConfig(key1,key2)
+  return s:fake_config[a:key1][a:key2]
 endf
 
 function! s:Prepare()

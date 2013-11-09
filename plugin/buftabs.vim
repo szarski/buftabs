@@ -28,16 +28,16 @@ function! s:BufferModified(index)
 endf
 
 function! s:BufferRepresentation(index)
-  let l:name = g:FormatFileName(g:BuftabsConfig()['formatter_pattern']['normal'], a:index)
+  let l:name = g:FormatFileName(g:BuftabsConfig('formatter_pattern','normal'), a:index)
   " Remove characters that mess up the statusline
   let l:name = substitute(l:name, "%", "%%", "g")
 
   if s:BufferModified(a:index)
-    let l:name = l:name . g:BuftabsConfig()['formatter_pattern']['modified_marker']
+    let l:name = l:name . g:BuftabsConfig('formatter_pattern','modified_marker')
   endif
   
   if s:BufferActive(a:index)
-    let l:name = g:BuftabsConfig()['formatter_pattern']['start_marker'] . l:name . g:BuftabsConfig()['formatter_pattern']['end_marker']
+    let l:name = g:BuftabsConfig('formatter_pattern','start_marker') . l:name . g:BuftabsConfig('formatter_pattern','end_marker')
   endif
 
   return l:name

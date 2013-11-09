@@ -4,13 +4,13 @@ function! SharedTestOfSettingWithDefaultValue(key1, key2, variable_name, default
   call g:BuftabsResetConfig()
   call Describe("when " . a:variable_name . " is not set")
   exec 'unlet! ' . a:variable_name
-  call AssertEquals(g:BuftabsConfig()[a:key1][a:key2], a:default_value)
+  call AssertEquals(g:BuftabsConfig(a:key1,a:key2), a:default_value)
 
   call g:BuftabsResetConfig()
   let l:test_value = 'test_value'
   call Describe("when " . a:variable_name . " is set to " . l:test_value)
   exec 'let ' . a:variable_name . ' = "' . l:test_value . '"'
-  call AssertEquals(g:BuftabsConfig()[a:key1][a:key2], l:test_value)
+  call AssertEquals(g:BuftabsConfig(a:key1,a:key2), l:test_value)
 endf
 
 function! TestFormatterPatternNormal()

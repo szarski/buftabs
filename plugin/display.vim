@@ -54,16 +54,16 @@ function s:StatuslineMarkers()
     let l:list_prefix = ''
     let l:list_suffix = ''
 
-    if g:BuftabsConfig()['highlight_group']['active'] != ''
-      let l:active_prefix = "%#" . g:BuftabsConfig()['highlight_group']['active'] . "#" . l:active_prefix
+    if g:BuftabsConfig('highlight_group','active') != ''
+      let l:active_prefix = "%#" . g:BuftabsConfig('highlight_group','active') . "#" . l:active_prefix
       let l:active_suffix = l:active_suffix . "%##"
     end
 
-    if g:BuftabsConfig()['highlight_group']['inactive'] != ''
-      let l:list_prefix = '%#' . g:BuftabsConfig()['highlight_group']['inactive'] . '#'
+    if g:BuftabsConfig('highlight_group','inactive') != ''
+      let l:list_prefix = '%#' . g:BuftabsConfig('highlight_group','inactive') . '#'
       let l:list_suffix = '%##'
       let l:active_prefix = "%##" . l:active_prefix
-      let l:active_suffix = l:active_suffix . '%#' . g:BuftabsConfig()['highlight_group']['inactive'] . '#'
+      let l:active_suffix = l:active_suffix . '%#' . g:BuftabsConfig('highlight_group','inactive') . '#'
     end
 
     let s:status_line_markers = [l:list_prefix, l:active_prefix, l:active_suffix, l:list_suffix]
@@ -89,7 +89,7 @@ function! g:BuftabsDisplay(content, current_index)
   " is displayed in the command line (volatile) or in the statusline
   " (persistent)
 
-  if g:BuftabsConfig()['display']['statusline']
+  if g:BuftabsConfig('display','statusline')
     call s:DrawInStatusline(a:content, a:current_index)
   else
     redraw

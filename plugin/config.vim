@@ -39,11 +39,11 @@ function! s:GetBuftabsConfig()
   return s:config
 endf
 
-function! g:BuftabsConfig()
+function! g:BuftabsConfig(key1,key2)
   if !exists('g:buftabs_config')
     let g:buftabs_config = s:GetBuftabsConfig()
   endif
-  return g:buftabs_config
+  return g:buftabs_config[a:key1][a:key2]
 endf
 
 function! g:BuftabsResetConfig()
