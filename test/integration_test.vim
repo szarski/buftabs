@@ -2,6 +2,7 @@ exec 'source ' . getcwd() . '/plugin/buftabs.vim'
 exec 'source ' . getcwd() . '/plugin/config.vim'
 exec 'source ' . getcwd() . '/plugin/formatter.vim'
 exec 'source ' . getcwd() . '/plugin/rooter.vim'
+exec 'source ' . getcwd() . '/plugin/display.vim'
 
 function! TestBasics()
   let g:buftabs_in_statusline = 1
@@ -9,9 +10,6 @@ function! TestBasics()
   call g:Buftabs_show(-1)
   call AssertEquals(&statusline, ' 1- [2-TestOutput]')
 endf
-
-
-
 
 function TestComplexSetup()
   set laststatus=2
@@ -24,6 +22,7 @@ function TestComplexSetup()
 
   let g:buftabs_active_highlight_group='BuftabsActive'
   let g:buftabs_inactive_highlight_group='BuftabsNormal'
+  let g:buftabs_overflow_highlight_group='BuftabsOverflow'
 
   " let statusline=%=buffers:\ %{buftabs#statusline()}
 
@@ -40,5 +39,10 @@ function TestComplexSetup()
 
   call g:Buftabs_show(-1)
 
-  call AssertEquals(&statusline, '%#BuftabsNormal#ig.vim %##%#BuftabsActive#[buftabs/p/display.vim]%##%#BuftabsNormal#%##')
+  call AssertEquals(&statusline, '%#BuftabsNormal# buftabs/p/buftabs.vim  buftabs/p/config.vim  %##%#BuftabsActive#[buftabs/p/display.vim]%##%#BuftabsNormal# %##')
+
+  exec 'e ' . getcwd() . '/plugin/newfile'
+  exec 'e ' . getcwd() . '/plugin/newfile1'
+
+  call AssertEquals(&statusline, '%#BuftabsOverflow#<%##%#BuftabsNormal#s/p/config.vim  buftabs/p/display.vim  buftabs/p/newfile  %##%#BuftabsActive#[buftabs/p/newfile1]%##%#BuftabsNormal# %##')
 endfunction

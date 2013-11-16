@@ -25,20 +25,19 @@ endfunction
 let g:buftabs_original_statusline = matchstr(&statusline, "%=.*")
 function s:DrawInStatusline(content, current_index)
   let l:index = a:current_index - 1
+  let l:markers = s:StatuslineMarkers()
   if (l:index < len(a:content)) && (l:index > -1)
-    let l:output_before = l:index > 0 ? ' ' . join(a:content[0:(l:index - 1)], '  ') . ' ' : ''
-    let l:output_after = l:index < len(a:content) - 1 ? ' ' . join(a:content[(l:index + 1):], '  ') . ' ' : ''
-    let l:output_active = a:content[l:index]
-    let l:widths = s:CalculateOutputWidthsWithActive(strlen(l:output_before), strlen(l:output_active), strlen(l:output_after))
+    let a:content[l:index] = "\x01" . a:content[l:index] . "\x01"
+    let l:outputs = split(' ' . join(a:content,'  ') . ' ', "\x01")
+    let l:widths = s:CalculateOutputWidthsWithActive(strlen(l:outputs[0]), strlen(l:outputs[1]), strlen(l:outputs[2]))
 
-    let l:markers = s:StatuslineMarkers()
-    let s:output = l:markers[0] . l:output_before[(-l:widths[0]):]
-    let s:output .=  l:markers[1] . l:output_active[:(l:widths[1])] . l:markers[2]
-    let s:output .=  l:output_after[:(l:widths[2])] . l:markers[3]
+    let s:output = l:markers[0] . strpart(l:outputs[0],strlen(l:outputs[0])-l:widths[0],l:widths[0])
+    let s:output .=  l:markers[1] . l:outputs[1][:(l:widths[1])] . l:markers[2]
+    let s:output .=  l:outputs[2][:(l:widths[2])] . l:markers[3]
   else
-    let l:joined_content = join(a:content, '  ')
+    let l:joined_content = ' ' . join(a:content, '  ') . ' '
     let l:width = s:CalculateOutputWidthWithoutActive(strlen(l:joined_content))
-    let s:output = s:StatuslineMarkers()[0] . ' ' . l:joined_content[:(l:width)] . ' ' . s:StatuslineMarkers()[3]
+    let s:output = l:markers[0] . l:joined_content[:(l:width)] . l:markers[3]
   endif
 
   " If the statusline already includes %{g:BuftabsStatusline()},
@@ -80,9 +79,9 @@ endfunction
 
 function s:CalculateOutputWidthsWithActive(length1, length2, length3)
   let l:width = s:CalculateOutputWidthWithoutActive(a:length1 + a:length2 + a:length3)
-  let l:l2 = min([a:length2, l:width])
-  let l:l3 = min([a:length3, l:width - l:l2])
-  let l:l1 = min([a:length1, l:width - l:l2 - l:l3])
+  let l:l2 = max([0,min([a:length2, l:width])])
+  let l:l3 = max([0,min([a:length3, l:width - l:l2])])
+  let l:l1 = max([0,min([a:length1, l:width - l:l2 - l:l3])])
   return [l:l1, l:l2, l:l3]
 endfunction
 
