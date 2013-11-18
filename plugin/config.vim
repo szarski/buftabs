@@ -40,6 +40,8 @@ function! s:GetBuftabsConfig()
 
   call s:SetSettingFromVariable('highlight_group', 'inactive', "g:buftabs_inactive_highlight_group", 0)
 
+  call s:SetSettingFromVariable('highlight_group', 'overflow', "g:buftabs_overflow_highlight_group", 0)
+
   call s:SetSettingFromVariable('display', 'statusline', "g:buftabs_in_statusline", 0)
 
   call s:SetSettingFromVariable('formatter_pattern', 'start_marker', 'g:buftabs_marker_start', "[")

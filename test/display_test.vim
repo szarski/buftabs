@@ -15,6 +15,7 @@ endf
 function! s:Prepare()
   call FakeConfig('highlight_group','active','AA')
   call FakeConfig('highlight_group','inactive','NN')
+  call FakeConfig('highlight_group','overflow',0)
   call FakeConfig('display','statusline',1)
   let &statusline = ''
 endf
@@ -41,11 +42,20 @@ endf
 
 function! TestBuftabsDisplayInStatuslineTrimming()
   call s:Prepare()
+  call FakeConfig('highlight_group','active',0)
+  call FakeConfig('highlight_group','inactive',0)
+  call FakeConfig('highlight_group','overflow',0)
 
   " Assumming the window width is 80 here
   call Describe("when text is too long to fit screen")
-  call g:BuftabsDisplay(['verylongtab1','verylongtab2','verylongtab3','verylongtab4','verylongtab5','verylongtab6','verylongtab7'], 4)
-  call AssertEquals(&statusline, '%#NN#tab2  verylongtab3  %##%#AA#verylongtab4%##%#NN#  verylongtab5  verylongtab6  verylongtab7 %##')
+
+
+  let l:outcomes = [ [4, '<longtab3  verylongtab4  verylongtab5  verylongtab6  verylongtab7  verylongtab8 '], [3, '<verylongtab3  verylongtab4  verylongtab5  verylongtab6  verylongtab7  verylong>'], [2, '<verylongtab2  verylongtab3  verylongtab4  verylongtab5  verylongtab6  verylong>'], [1, ' verylongtab1  verylongtab2  verylongtab3  verylongtab4  verylongtab5  verylong>'] ]
+
+  for [selected, outcome] in l:outcomes
+    call g:BuftabsDisplay(['verylongtab1','verylongtab2','verylongtab3','verylongtab4','verylongtab5','verylongtab6','verylongtab7', 'verylongtab8'], selected)
+    call AssertEquals(&statusline, outcome)
+  endfor
 endf
 
 function! TestBuftabsDisplayInStatuslineOverwriting()

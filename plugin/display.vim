@@ -28,16 +28,33 @@ function s:DrawInStatusline(content, current_index)
   let l:markers = s:StatuslineMarkers()
   if (l:index < len(a:content)) && (l:index > -1)
     let a:content[l:index] = "\x01" . a:content[l:index] . "\x01"
-    let l:outputs = split(' ' . join(a:content,'  ') . ' ', "\x01")
-    let l:widths = s:CalculateOutputWidthsWithActive(strlen(l:outputs[0]), strlen(l:outputs[1]), strlen(l:outputs[2]))
+    let l:outputs = split("a" . join(a:content,'  ') . "a", "\x01")
+    let l:widths = s:CalculateOutputWidthsWithActive(strlen(l:outputs[0]) - 1, strlen(l:outputs[1]), strlen(l:outputs[2]) - 1, 2)
 
-    let s:output = l:markers[0] . strpart(l:outputs[0],strlen(l:outputs[0])-l:widths[0],l:widths[0])
-    let s:output .=  l:markers[1] . l:outputs[1][:(l:widths[1])] . l:markers[2]
-    let s:output .=  l:outputs[2][:(l:widths[2])] . l:markers[3]
+    let l:left = strpart(l:outputs[0],strlen(l:outputs[0])-l:widths[0],l:widths[0])
+    let l:middle = l:outputs[1][:(l:widths[1])]
+    let l:right = strpart(l:outputs[2],0, l:widths[2])
+
+    if l:widths[0] < strlen(l:outputs[0]) - 1
+      let s:output = l:markers[4] . l:markers[0]
+    else
+      let s:output = l:markers[0] . ' '
+    endif
+    let s:output .=  l:left . l:markers[1] . l:middle . l:markers[2] . l:right
+    if l:widths[2] < strlen(l:outputs[2]) - 1
+      let s:output .=  l:markers[3] . l:markers[5]
+    else
+      let s:output .=  ' ' . l:markers[3]
+    endif
   else
-    let l:joined_content = ' ' . join(a:content, '  ') . ' '
-    let l:width = s:CalculateOutputWidthWithoutActive(strlen(l:joined_content))
-    let s:output = l:markers[0] . l:joined_content[:(l:width)] . l:markers[3]
+    let l:joined_content = join(a:content, '  ')
+    let l:width = s:CalculateOutputWidthWithoutActive(strlen(l:joined_content), 2)
+    let s:output = l:markers[0] . ' ' . l:joined_content[:(l:width - 1)]
+    if l:width < strlen(l:joined_content)
+      let s:output .= l:markers[3] . l:markers[5]
+    else
+      let s:output .= ' ' . l:markers[3]
+    endif
   endif
 
   " If the statusline already includes %{g:BuftabsStatusline()},
@@ -53,6 +70,8 @@ function s:StatuslineMarkers()
   let l:active_prefix = ''
   let l:list_prefix = ''
   let l:list_suffix = ''
+  let l:overflow_prefix = ''
+  let l:overflow_suffix = ''
 
   if g:BuftabsConfig('highlight_group','active') != ''
     let l:active_prefix = "%#" . g:BuftabsConfig('highlight_group','active')
@@ -69,16 +88,24 @@ function s:StatuslineMarkers()
     let l:active_suffix .= '#'
   end
 
-  return [l:list_prefix, l:active_prefix, l:active_suffix, l:list_suffix]
+  if g:BuftabsConfig('highlight_group','overflow') != ''
+    let l:overflow_prefix = '%#' . g:BuftabsConfig('highlight_group','overflow') . '#<%##'
+    let l:overflow_suffix = '%#' . g:BuftabsConfig('highlight_group','overflow') . '#>%##'
+  else
+    let l:overflow_prefix = '<'
+    let l:overflow_suffix = '>'
+  end
+
+  return [l:list_prefix, l:active_prefix, l:active_suffix, l:list_suffix, l:overflow_prefix, l:overflow_suffix]
 endfunction
 
 
-function s:CalculateOutputWidthWithoutActive(length)
-  return min([winwidth(0) - 5,a:length])
+function s:CalculateOutputWidthWithoutActive(length, distance)
+  return min([winwidth(0) - a:distance,a:length])
 endfunction
 
-function s:CalculateOutputWidthsWithActive(length1, length2, length3)
-  let l:width = s:CalculateOutputWidthWithoutActive(a:length1 + a:length2 + a:length3)
+function s:CalculateOutputWidthsWithActive(length1, length2, length3, distance)
+  let l:width = s:CalculateOutputWidthWithoutActive(a:length1 + a:length2 + a:length3, a:distance)
   let l:l2 = max([0,min([a:length2, l:width])])
   let l:l3 = max([0,min([a:length3, l:width - l:l2])])
   let l:l1 = max([0,min([a:length1, l:width - l:l2 - l:l3])])
