@@ -107,8 +107,20 @@ endfunction
 function s:CalculateOutputWidthsWithActive(length1, length2, length3, distance)
   let l:width = s:CalculateOutputWidthWithoutActive(a:length1 + a:length2 + a:length3, a:distance)
   let l:l2 = max([0,min([a:length2, l:width])])
-  let l:l3 = max([0,min([a:length3, l:width - l:l2])])
-  let l:l1 = max([0,min([a:length1, l:width - l:l2 - l:l3])])
+
+
+  let l:shortening_factor = 1.0 * (l:width - l:l2) / (a:length1 + a:length3)
+
+  if l:shortening_factor < 1
+    let l:l3 = float2nr(l:shortening_factor * a:length3)
+    let l:l1 = max([0,min([a:length1, (l:width - l:l2) - l:l3])])
+  else
+    let l:l3 = a:length3
+    let l:l1 = a:length1
+  endif
+
+  "let l:l3 = max([0,min([a:length3, l:width - l:l2])])
+  "let l:l1 = max([0,min([a:length1, l:width - l:l2 - l:l3])])
   return [l:l1, l:l2, l:l3]
 endfunction
 

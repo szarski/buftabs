@@ -49,12 +49,13 @@ function! TestBuftabsDisplayInStatuslineTrimming()
   " Assumming the window width is 80 here
   call Describe("when text is too long to fit screen")
 
+let l:outcomes = [' verylongtab1  verylongtab2  verylongtab3  verylongtab4  verylongtab5  verylong>', '<longtab1  verylongtab2  verylongtab3  verylongtab4  verylongtab5  verylongtab6>', '<ab1  verylongtab2  verylongtab3  verylongtab4  verylongtab5  verylongtab6  ver>', '< verylongtab2  verylongtab3  verylongtab4  verylongtab5  verylongtab6  verylon>', '<longtab2  verylongtab3  verylongtab4  verylongtab5  verylongtab6  verylongtab7>' , '<tab2  verylongtab3  verylongtab4  verylongtab5  verylongtab6  verylongtab7  ve>' , '< verylongtab3  verylongtab4  verylongtab5  verylongtab6  verylongtab7  verylon>' , '<longtab3  verylongtab4  verylongtab5  verylongtab6  verylongtab7  verylongtab8 ']
 
-  let l:outcomes = [ [4, '<longtab3  verylongtab4  verylongtab5  verylongtab6  verylongtab7  verylongtab8 '], [3, '<verylongtab3  verylongtab4  verylongtab5  verylongtab6  verylongtab7  verylong>'], [2, '<verylongtab2  verylongtab3  verylongtab4  verylongtab5  verylongtab6  verylong>'], [1, ' verylongtab1  verylongtab2  verylongtab3  verylongtab4  verylongtab5  verylong>'] ]
-
-  for [selected, outcome] in l:outcomes
+  let l:selected = 1
+  for l:outcome in l:outcomes
     call g:BuftabsDisplay(['verylongtab1','verylongtab2','verylongtab3','verylongtab4','verylongtab5','verylongtab6','verylongtab7', 'verylongtab8'], selected)
-    call AssertEquals(&statusline, outcome)
+    call AssertEquals(&statusline, l:outcome)
+    let l:selected += 1
   endfor
 endf
 
