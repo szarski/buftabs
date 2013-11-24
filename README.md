@@ -58,25 +58,31 @@ Configuration
   * `g:buftabs_marker_start`
   * `g:buftabs_marker_end`
 
-    Define to change the markers surrounging currently active buffer
+    Define to change the markers surrounging currently active buffer (or disable them by assigning empty strings).
 
     ```vimscript
-    let g:buftabs_marker_start='<'
-    let g:buftabs_marker_end='>'
+    let g:buftabs_marker_start=''
+    let g:buftabs_marker_end=''
     ```
   * `g:buftabs_marker_modified`
 
     Set the marker appended to modified buffers
 
     ```vimscript
-    let g:buftabs_marker_modified='M'
+    let g:buftabs_marker_modified='!!'
     ```
   * `g:buftabs_active_highlight_group`
   * `g:buftabs_inactive_highlight_group`
+  * `g:buftabs_overflow_highlight_group`
 
     The name of a highlight group (:help highlight-groups) which is used to
-    show the name of the current active buffer and of all other inactive
-    buffers. If these variables are not defined, no highlighting is used.
+    show:
+
+      * the name of the current active buffer
+      * all other inactive buffers
+      * overflow markers
+
+    If these variables are not defined, no highlighting is used.
     (Highlighting is only functional when g:buftabs_in_statusline is enabled)
 
     You can use your own highlight groups:
@@ -84,9 +90,11 @@ Configuration
     ```vimscript
     hi BuftabsNormal  guifg=#D2FF2F guibg=Black
     hi BuftabsActive  guifg=#FFFFFF guibg=#2EE5FA
+    hi BuftabsOverflow   guifg=#FFFFFF guibg=#FF0000
 
     let g:buftabs_active_highlight_group='BuftabsActive'
     let g:buftabs_inactive_highlight_group='BuftabsNormal'
+    let g:buftabs_overflow_highlight_group='BuftabsOverflow'
     ```
 
 Testing
