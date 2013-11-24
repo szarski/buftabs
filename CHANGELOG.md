@@ -62,3 +62,6 @@ s0.20 2013-10-12  Implemented buffer names custom formatting
 
 s0.21 2013-11-01  Refactored settings and some parts of the main file,
                   updated readme a bit.
+
+s0.22 2013-11-24  Refactored most of the plugin, improved tabs spacing
+                  and overflow handling
