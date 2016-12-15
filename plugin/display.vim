@@ -18,12 +18,12 @@ function! s:Pecho(msg)
   aug END
 endf
 
-function s:DrawInCommandLine(content)
+function! s:DrawInCommandLine(content)
   call s:Pecho(join(a:content, ' '))
 endfunction
 
 let g:buftabs_original_statusline = matchstr(&statusline, "%=.*")
-function s:DrawInStatusline(content, current_index)
+function! s:DrawInStatusline(content, current_index)
   let l:index = a:current_index - 1
   let l:markers = s:StatuslineMarkers()
   if (l:index < len(a:content)) && (l:index > -1)
@@ -65,7 +65,7 @@ function s:DrawInStatusline(content, current_index)
   end
 endfunction
 
-function s:StatuslineMarkers()
+function! s:StatuslineMarkers()
   let l:active_suffix = ''
   let l:active_prefix = ''
   let l:list_prefix = ''
@@ -100,11 +100,11 @@ function s:StatuslineMarkers()
 endfunction
 
 
-function s:CalculateOutputWidthWithoutActive(length, distance)
+function! s:CalculateOutputWidthWithoutActive(length, distance)
   return min([winwidth(0) - a:distance,a:length])
 endfunction
 
-function s:CalculateOutputWidthsWithActive(length1, length2, length3, distance)
+function! s:CalculateOutputWidthsWithActive(length1, length2, length3, distance)
   let l:width = s:CalculateOutputWidthWithoutActive(a:length1 + a:length2 + a:length3, a:distance)
   let l:l2 = max([0,min([a:length2, l:width])])
 
